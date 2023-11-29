@@ -1,14 +1,33 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:actual/common/const/colors.dart';
 import 'package:actual/common/layout/default_layout.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/component/custom_text_form_field.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  var refreshToken = "";
+
+  @override
   Widget build(BuildContext context) {
+    final dio = Dio();
+
+    final emulatorIp = '10.0.2.2:3000';
+    final simulatorIp = '127.0.0.1:3000';
+    final ip = Platform.isAndroid ? simulatorIp : emulatorIp;
+
+    final realIp = '192.168.1.29:3000';
+
     return DefaultLayout(
       child: SingleChildScrollView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -45,14 +64,37 @@ class LoginScreen extends StatelessWidget {
                   height: 16,
                 ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    //ID:비밀번호
+                    final rawString = 'test@codefactory.ai:testtest';
+                    Codec<String, String> stringToBase64 = utf8.fuse(base64);
+                    String token = stringToBase64.encode(rawString);
+
+                    final resp = await dio.post('http://$realIp/auth/login', options: Options(
+                      headers: {
+                        'authorization' : 'Basic $token'
+                      },
+                    ));
+
+                    setState(() {
+                      print(resp.data['data']['refreshToken']);
+                    });
+                  },
                   child: Text('로그인'),
                   style: ElevatedButton.styleFrom(
                     primary: PRIMARY_COLOR,
                   ),
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    final resp = await dio.post('http://$realIp/auth/token', options: Options(
+                      headers: {
+                        'authorization' : 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RAY29kZWZhY3RvcnkuYWkiLCJzdWIiOiJmNTViMzJkMi00ZDY4LTRjMWUtYTNjYS1kYTlkN2QwZDkyZTUiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcwMTI0MjkzMSwiZXhwIjoxNzAxMzI5MzMxfQ.qEk4zrASW189zzJ6xKt-ys1bzZQs87dFG4cuS6-6zQ0'
+                      },
+                    ));
+
+                    print(resp.data);
+                  },
                   child: Text('회원가입'),
                   style: TextButton.styleFrom(primary: Colors.black),
                 )
