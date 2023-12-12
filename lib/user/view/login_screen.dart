@@ -26,12 +26,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final dio = Dio();
 
-    final emulatorIp = '10.0.2.2:3000';
-    final simulatorIp = '127.0.0.1:3000';
-    final ip = Platform.isAndroid ? simulatorIp : emulatorIp;
-
-    final realIp = '192.168.1.29:3000';
-
     return DefaultLayout(
       child: SingleChildScrollView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -101,15 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 TextButton(
                   onPressed: () async {
-                    // final resp = await dio.post('http://$realIp/auth/token',
-                    //     options: Options(
-                    //       headers: {'authorization': 'Bearer $refreshToken'},
-                    //     ));
-                    //
-                    // setState(() {
-                    //   print(resp.data);
-                    //   accessToken = resp.data['accessToken'];
-                    // });
+
                   },
                   child: Text('회원가입'),
                   style: TextButton.styleFrom(primary: Colors.black),
