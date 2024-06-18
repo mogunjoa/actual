@@ -36,7 +36,7 @@ class RestaurantDetailScreen extends StatelessWidget {
       child: FutureBuilder<Map<String, dynamic>>(
         future: getRestaurantDetail(),
         builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
-          if(!snapshot.hasData) {
+          if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
           }
 
@@ -46,7 +46,7 @@ class RestaurantDetailScreen extends StatelessWidget {
             slivers: [
               renderTop(model: item),
               renderLabel(),
-              renderProduct(),
+              renderProducts(products: item.products),
             ],
           );
         },
@@ -57,8 +57,8 @@ class RestaurantDetailScreen extends StatelessWidget {
   SliverToBoxAdapter renderTop({required RestaurantDetailModel model}) {
     return SliverToBoxAdapter(
       child: RestaurantCard.fromModel(
-          model: model,
-          isDetail: true,
+        model: model,
+        isDetail: true,
       ),
     );
   }
@@ -78,13 +78,17 @@ class RestaurantDetailScreen extends StatelessWidget {
     );
   }
 
-  renderProduct() {
+  SliverPadding renderProducts(
+      {required List<RestaurantProductModel> products}) {
     return SliverPadding(
       padding: EdgeInsets.symmetric(horizontal: 16),
       sliver: SliverList(
           delegate: SliverChildBuilderDelegate((context, index) {
-        return Padding(padding: EdgeInsets.only(top: 16), child: ProductCard());
-      }, childCount: 10)),
+        final model = products[index];
+        return Padding(
+            padding: EdgeInsets.only(top: 16),
+            child: ProductCard.fromModel(model: model));
+      }, childCount: products.length)),
     );
   }
 }
