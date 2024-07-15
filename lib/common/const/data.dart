@@ -9,7 +9,7 @@ final storage = FlutterSecureStorage();
 //localhost
 const emulateIp = '10.0.0.2:3000';
 const simulatorIp = '127.0.0.1:3000';
-// const realIp = '192.168.0.24:3000';
-const realIp = '192.168.0.19:3000';
+const realIp = '192.168.0.24:3000';
+// const realIp = '192.168.0.19:3000';
 
 final ip = Platform.isIOS == true ? simulatorIp : emulateIp;

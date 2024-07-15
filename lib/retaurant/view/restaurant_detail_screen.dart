@@ -18,10 +18,13 @@ class RestaurantDetailScreen extends StatelessWidget {
     final dio = Dio();
 
     dio.interceptors.add(
-      CustomInterceptor(storage: storage),
+      CustomInterceptor(
+        storage: storage,
+      ),
     );
 
-    final repository = RestaurantRepository(dio, baseUrl: 'http://$ip/restaurant');
+    final repository =
+        RestaurantRepository(dio, baseUrl: 'http://$realIp/restaurant');
 
     return repository.getRestaurantDetail(id: id);
   }
@@ -33,7 +36,7 @@ class RestaurantDetailScreen extends StatelessWidget {
       child: FutureBuilder<RestaurantDetailModel>(
         future: getRestaurantDetail(),
         builder: (context, AsyncSnapshot<RestaurantDetailModel> snapshot) {
-          if(snapshot.hasError) {
+          if (snapshot.hasError) {
             return Center(
               child: Text(snapshot.error.toString()),
             );
