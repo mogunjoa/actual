@@ -1,13 +1,7 @@
-import 'package:actual/common/const/data.dart';
-import 'package:actual/common/dio/dio.dart';
 import 'package:actual/common/model/cursor_pagination_model.dart';
-import 'package:actual/common/secure_storage/secure_storage.dart';
-import 'package:actual/retaurant/component/restaurant_card.dart';
-import 'package:actual/retaurant/model/restaurant_model.dart';
-import 'package:actual/retaurant/provider/restaurant_provider.dart';
-import 'package:actual/retaurant/repository/restaurant_repository.dart';
-import 'package:actual/retaurant/view/restaurant_detail_screen.dart';
-import 'package:dio/dio.dart';
+import 'package:actual/restaurant/component/restaurant_card.dart';
+import 'package:actual/restaurant/provider/restaurant_provider.dart';
+import 'package:actual/restaurant/view/restaurant_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

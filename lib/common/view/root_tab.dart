@@ -1,6 +1,6 @@
 import 'package:actual/common/const/colors.dart';
 import 'package:actual/common/layout/default_layout.dart';
-import 'package:actual/retaurant/view/restaurant_screen.dart';
+import 'package:actual/restaurant/view/restaurant_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

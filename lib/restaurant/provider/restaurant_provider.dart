@@ -1,7 +1,7 @@
 import 'package:actual/common/model/cursor_pagination_model.dart';
 import 'package:actual/common/model/pagination_params.dart';
-import 'package:actual/retaurant/model/restaurant_model.dart';
-import 'package:actual/retaurant/repository/restaurant_repository.dart';
+import 'package:actual/restaurant/model/restaurant_model.dart';
+import 'package:actual/restaurant/repository/restaurant_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final restaurantDetailProvider =
