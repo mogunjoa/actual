@@ -1,64 +1,95 @@
-import 'package:actual/common/const/data.dart';
-import 'package:actual/common/dio/dio.dart';
 import 'package:actual/common/layout/default_layout.dart';
 import 'package:actual/product/component/product_card.dart';
 import 'package:actual/retaurant/component/restaurant_card.dart';
 import 'package:actual/retaurant/model/restaurant_detail_model.dart';
-import 'package:actual/retaurant/repository/restaurant_repository.dart';
-import 'package:dio/dio.dart';
+import 'package:actual/retaurant/model/restaurant_model.dart';
+import 'package:actual/retaurant/provider/restaurant_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
-class RestaurantDetailScreen extends StatelessWidget {
+class RestaurantDetailScreen extends ConsumerStatefulWidget {
   final String id;
 
   const RestaurantDetailScreen({super.key, required this.id});
 
-  Future<RestaurantDetailModel> getRestaurantDetail() async {
-    final dio = Dio();
+  @override
+  ConsumerState<RestaurantDetailScreen> createState() =>
+      _RestaurantDetailScreenState();
+}
 
-    dio.interceptors.add(
-      CustomInterceptor(
-        storage: storage,
-      ),
-    );
+class _RestaurantDetailScreenState
+    extends ConsumerState<RestaurantDetailScreen> {
+  @override
+  void initState() {
+    super.initState();
 
-    final repository =
-        RestaurantRepository(dio, baseUrl: 'http://$realIp/restaurant');
-
-    return repository.getRestaurantDetail(id: id);
+    ref.read(restaurantProvider.notifier).getDetail(id: widget.id);
   }
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(restaurantDetailProvider(widget.id));
+
+    if (state == null) {
+      return const DefaultLayout(
+          child: Center(
+        child: CircularProgressIndicator(),
+      ));
+    }
+
     return DefaultLayout(
       title: '불타는 떡볶이',
-      child: FutureBuilder<RestaurantDetailModel>(
-        future: getRestaurantDetail(),
-        builder: (context, AsyncSnapshot<RestaurantDetailModel> snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-              child: Text(snapshot.error.toString()),
-            );
-          }
-
-          if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
-          }
-
-          return CustomScrollView(
-            slivers: [
-              renderTop(model: snapshot.data!),
-              renderLabel(),
-              renderProducts(products: snapshot.data!.products),
-            ],
-          );
-        },
+      child: CustomScrollView(
+        slivers: [
+          renderTop(model: state),
+          if (state is! RestaurantDetailModel) renderLoading(),
+          if (state is RestaurantDetailModel) renderLabel(),
+          if (state is RestaurantDetailModel)
+            renderProducts(products: state.products),
+        ],
       ),
     );
   }
 
-  SliverToBoxAdapter renderTop({required RestaurantDetailModel model}) {
+  SliverPadding renderLoading() {
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(
+        vertical: 16.0,
+        horizontal: 16.0,
+      ),
+      sliver: SliverList(
+        delegate: SliverChildListDelegate(
+          List.generate(
+            3,
+                (index) => Padding(
+              padding: const EdgeInsets.only(bottom: 32),
+              child: Skeletonizer(
+                enabled: true,
+                child: Column( // ListView 대신 Column 사용
+                  children: List.generate(7, (index) {
+                    return Card(
+                      child: ListTile(
+                        title: Text('Item number $index as title'),
+                        subtitle: const Text('Subtitle here'),
+                        trailing: const Icon(Icons.ac_unit),
+                      ),
+                    );
+                  }),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  SliverToBoxAdapter renderTop({
+    required RestaurantModel model,
+  }) {
     return SliverToBoxAdapter(
       child: RestaurantCard.fromModel(
         model: model,
@@ -68,7 +99,7 @@ class RestaurantDetailScreen extends StatelessWidget {
   }
 
   SliverPadding renderLabel() {
-    return SliverPadding(
+    return const SliverPadding(
       padding: EdgeInsets.symmetric(horizontal: 16),
       sliver: SliverToBoxAdapter(
         child: Text(
