@@ -1,4 +1,5 @@
 import 'package:actual/common/model/cursor_pagination_model.dart';
+import 'package:actual/common/utils/pagination_utils.dart';
 import 'package:actual/restaurant/component/restaurant_card.dart';
 import 'package:actual/restaurant/provider/restaurant_provider.dart';
 import 'package:actual/restaurant/view/restaurant_detail_screen.dart';
@@ -23,14 +24,19 @@ class _RestaurantScreenState extends ConsumerState<RestaurantScreen> {
   }
 
   void scrollListener() {
+    PaginationUtils.paginate(
+      controller: controller,
+      provider: ref.read(restaurantProvider.notifier),
+    );
+
     // 현재 위치가 최대 길이보다 조금 덜되는 위치까지 왔다면 새로운 데이터를 추가 요청
     //최대 스크롤 길이에서 300픽셀 위 포지션을 넘게 스크롤 시 동작
-    if (controller.offset > controller.position.maxScrollExtent - 300) {
-      ref.read(restaurantProvider.notifier).paginate(
-            fetchMore: true,
-            fetchCount: 10,
-          );
-    }
+    // if (controller.offset > controller.position.maxScrollExtent - 300) {
+    //   ref.read(restaurantProvider.notifier).paginate(
+    //         fetchMore: true,
+    //         fetchCount: 10,
+    //       );
+    // }
   }
 
   @override
@@ -64,8 +70,7 @@ class _RestaurantScreenState extends ConsumerState<RestaurantScreen> {
         itemBuilder: (context, index) {
           if (index == cp.data.length) {
             return Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Center(
                 child: data is CursorPaginationFetchingMore
                     ? CircularProgressIndicator()
