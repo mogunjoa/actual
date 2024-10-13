@@ -7,6 +7,7 @@ import 'package:actual/rating/model/rating_model.dart';
 import 'package:dio/dio.dart' hide Headers;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retrofit/http.dart';
+import 'package:retrofit/retrofit.dart';
 
 part 'restaurant_rating_repository.g.dart';
 
